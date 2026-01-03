@@ -1,0 +1,6 @@
+{
+    "extensions.recommendations": [
+        "julialang.language-julia"
+    ],
+    "julia.lint.run": true
+}
