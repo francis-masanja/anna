@@ -44,7 +44,7 @@ function julia_main()::Cint
     try
         s = ArgParseSettings()
         @add_arg_table s begin
-            "interactive"
+            "--interactive", "-i"
                 help = "Start Anna AI in interactive mode"
                 action = :store_true
             "--env"
@@ -63,6 +63,8 @@ function julia_main()::Cint
         Logger.setup_logger(log_level)
 
         if parsed_args["interactive"]
+            banner = read("banner.txt", String)
+            println(banner)
             @info "Starting Anna AI in interactive mode with model: $model in $env environment"
             # Interactive mode implementation to be added
         else
