@@ -6,227 +6,533 @@
     <title>Anna AI - Your Intelligent Companion</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <!-- Custom CSS -->
+    <!-- Vue.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+    <!-- Vue Router CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vue-router@4"></script>
+    <!-- Marked.js for Markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Bootstrap Icons CDN for nicer icons (instead of Unicode chars) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
     <style>
+        :root {
+            --primary-color: #6f42c1; /* Bootstrap purple */
+            --secondary-color: #e9ecef; /* Light gray */
+            --dark-color: #343a40;
+            --light-color: #f8f9fa;
+            --text-color: #333;
+            --heading-color: #212529;
+            --accent-color: #007bff; /* A nice blue for links/accents */
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: var(--text-color);
+            background-color: var(--light-color);
+            line-height: 1.6;
+        }
+
+        /* Custom Scrollbar for a nicer feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--light-color);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+
+        .navbar {
+            background-color: var(--dark-color) !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         .navbar-brand {
-            font-weight: bold;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
         }
+        .navbar-brand img {
+            transition: transform 0.3s ease-in-out;
+        }
+        .navbar-brand img:hover {
+            transform: rotate(10deg) scale(1.05);
+        }
+        .nav-link {
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7) !important;
+            transition: color 0.3s ease-in-out;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #fff !important;
+            text-shadow: 0 0 5px rgba(255,255,255,0.5);
+        }
+
         .hero-section {
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1518779578993-ec3579df2cc0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1518779578993-ec3579df2cc0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center;
             background-size: cover;
             color: #fff;
-            padding: 100px 0;
+            padding: 120px 0;
             text-align: center;
+            position: relative;
+            overflow: hidden; /* For pseudo-element effects */
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3); /* Dark overlay */
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
         }
         .hero-section h1 {
-            font-size: 3.5rem;
+            font-size: 4.5rem;
+            font-weight: 700;
             margin-bottom: 20px;
+            letter-spacing: 1px;
+            animation: fadeInDown 1s ease-out;
         }
-        .hero-section p {
-            font-size: 1.25rem;
-            max-width: 800px;
-            margin: 0 auto 30px;
+        .hero-section p.lead {
+            font-size: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto 40px;
+            opacity: 0.9;
+            animation: fadeInUp 1.2s ease-out;
         }
+        .hero-section .btn {
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease-in-out;
+            animation: zoomIn 1.5s ease-out;
+        }
+        .hero-section .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .hero-section .btn-primary:hover {
+            background-color: #5a37a1;
+            border-color: #5a37a1;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        .hero-section .btn-outline-light:hover {
+            background-color: rgba(255,255,255,0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .section-heading {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--heading-color);
+            margin-bottom: 50px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+
         .feature-icon {
-            font-size: 3rem;
-            color: #6f42c1; /* Bootstrap purple */
-            margin-bottom: 15px;
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease-in-out;
+        }
+        .card:hover .feature-icon {
+            transform: scale(1.1);
         }
         .card {
-            border: none;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease-in-out;
         }
         .card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
         }
+        .card-title {
+            font-weight: 600;
+            color: var(--heading-color);
+        }
+        .card-text {
+            color: #6c757d;
+        }
+
         .docs-section .list-group-item {
-            transition: background-color 0.2s, color 0.2s;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--text-color);
+            transition: all 0.3s ease-in-out;
+            border: 1px solid var(--secondary-color);
         }
         .docs-section .list-group-item:hover {
-            background-color: #e9ecef;
-            color: #6f42c1;
-        }
-        footer {
-            background-color: #343a40;
+            background-color: var(--primary-color);
             color: #fff;
-            padding: 20px 0;
-            text-align: center;
+            transform: translateX(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .docs-section .list-group-item.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .footer {
+            background-color: var(--dark-color);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 40px 0;
+        }
+        .footer p {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+
+        /* Markdown Content Styling */
+        #markdown-content {
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        #markdown-content h1, #markdown-content h2, #markdown-content h3, #markdown-content h4, #markdown-content h5, #markdown-content h6 {
+            color: var(--heading-color);
+            margin-top: 1.5em;
+            margin-bottom: 0.8em;
+            padding-bottom: 0.3em;
+            border-bottom: 1px solid var(--secondary-color);
+        }
+        #markdown-content h1 { font-size: 2.2rem; border-bottom: 2px solid var(--primary-color); }
+        #markdown-content h2 { font-size: 1.8rem; }
+        #markdown-content p {
+            margin-bottom: 1em;
+        }
+        #markdown-content ul, #markdown-content ol {
+            margin-bottom: 1em;
+            padding-left: 2em;
+        }
+        #markdown-content code {
+            background-color: #e9ecef;
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            color: #d63384; /* Bootstrap pink for code */
+        }
+        #markdown-content pre {
+            background-color: #212529; /* Dark background for code blocks */
+            color: #e83e8c; /* Lighter pink for text */
+            padding: 1em;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: 1.5em;
+        }
+        #markdown-content pre code {
+            background-color: transparent;
+            color: #e83e8c;
+            padding: 0;
+            border-radius: 0;
+        }
+        #markdown-content a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: color 0.3s ease-in-out;
+        }
+        #markdown-content a:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+        #markdown-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1em auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        #markdown-content table {
+            width: 100%;
+            margin-bottom: 1em;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        #markdown-content th, #markdown-content td {
+            border: 1px solid #dee2e6;
+            padding: 0.75em;
+            vertical-align: top;
+        }
+        #markdown-content th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: var(--heading-color);
+        }
+        #markdown-content blockquote {
+            border-left: 4px solid var(--primary-color);
+            padding-left: 1em;
+            margin-left: 0;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
         }
     </style>
 </head>
 <body>
-
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="index.html">
-                <img src="pages/assets/logo.png" alt="Anna AI Logo" width="30" height="30" class="d-inline-block align-text-top me-2">
-                Anna AI
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="pages/README.md">Overview</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="pages/architecture.md">Architecture</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="pages/cli.md">CLI</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="pages/configuration.md">Configuration</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="pages/troubleshooting.md">Troubleshooting</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="pages/CONTRIBUTING.md">Contribute</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <section class="hero-section">
-        <div class="container">
-            <h1>Anna AI</h1>
-            <p class="lead">Your Intelligent Companion for Creative and Technical Tasks, powered by Julia and Ollama.</p>
-            <a href="pages/README.md" class="btn btn-primary btn-lg">Get Started</a>
-            <a href="https://github.com/am3lue/AnnaAI.jl" class="btn btn-outline-light btn-lg ms-2">View on GitHub</a>
-        </div>
-    </section>
-
-    <section class="container my-5">
-        <h2 class="text-center mb-4">✨ Core Abilities</h2>
-        <div class="row text-center">
-            <div class="col-md-4 mb-4">
-                <div class="card p-4">
-                    <i class="bi bi-book feature-icon">📖</i>
-                    <div class="card-body">
-                        <h5 class="card-title">Storytelling</h5>
-                        <p class="card-text">Engaging narrative generation and creative writing.</p>
-                    </div>
+    <div id="app">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="#/">
+                    <img src="pages/assets/logo.png" alt="Anna AI Logo" width="30" height="30" class="d-inline-block align-text-top me-2">
+                    Anna AI
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <router-link to="/overview" class="nav-link" active-class="active">Overview</router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link to="/architecture" class="nav-link" active-class="active">Architecture</router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link to="/cli" class="nav-link" active-class="active">CLI</router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link to="/configuration" class="nav-link" active-class="active">Configuration</router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link to="/troubleshooting" class="nav-link" active-class="active">Troubleshooting</router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link to="/contributing" class="nav-link" active-class="active">Contribute</router-link>
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
-                <div class="card p-4">
-                    <i class="bi bi-heart feature-icon">💕</i>
-                    <div class="card-body">
-                        <h5 class="card-title">Companionship</h5>
-                        <p class="card-text">Kind, supportive, and caring interactions.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card p-4">
-                    <i class="bi bi-code-slash feature-icon">🐢</i>
-                    <div class="card-body">
-                        <h5 class="card-title">Julia Helper & Debugging</h5>
-                        <p class="card-text">Programming assistance, challenges, and bug resolution for Julia code.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        </nav>
 
-    <section class="container my-5 docs-section">
-        <h2 class="text-center mb-4">📚 Documentation & Resources</h2>
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="list-group">
-                    <a href="pages/README.md" class="list-group-item list-group-item-action">Project Overview (README)</a>
-                    <a href="pages/architecture.md" class="list-group-item list-group-item-action">Architecture Documentation</a>
-                    <a href="pages/cli.md" class="list-group-item list-group-item-action">Command-Line Interface (CLI) Guide</a>
-                    <a href="pages/configuration.md" class="list-group-item list-group-item-action">Configuration Guide</a>
-                    <a href="pages/troubleshooting.md" class="list-group-item list-group-item-action">Troubleshooting Guide</a>
-                    <a href="pages/CONTRIBUTING.md" class="list-group-item list-group-item-action">Contribution Guidelines</a>
-                    <a href="pages/LICENSE" class="list-group-item list-group-item-action">License Information</a>
-                </div>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container hero-content">
+                <h1>Anna AI</h1>
+                <p class="lead">Your Intelligent Companion for Creative and Technical Tasks, powered by Julia and Ollama.</p>
+                <router-link to="/overview" class="btn btn-primary btn-lg">Get Started</router-link>
+                <a href="https://github.com/am3lue/AnnaAI.jl" target="_blank" class="btn btn-outline-light btn-lg ms-2">View on GitHub</a>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <footer class="mt-5">
-        <div class="container">
-            <p>&copy; 2026 Anna AI Project. All rights reserved.</p>
-        </div>
-    </footer>
+        <!-- Main Content Area for Router View -->
+        <main class="container my-5">
+            <router-view></router-view>
+        </main>
 
-    <!-- Bootstrap JS and Popper.js -->
+        <!-- Footer -->
+        <footer class="footer mt-auto py-3">
+            <div class="container">
+                <p class="text-center">&copy; 2026 Anna AI Project. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <!-- Marked.js for Markdown rendering -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const path = window.location.hash.substring(1) || 'pages/README.md'; // Default to README
-            loadMarkdown(path);
+        const Home = { 
+            template: `
+                <div>
+                    <section class="container my-5">
+                        <h2 class="section-heading text-center">✨ Core Abilities</h2>
+                        <div class="row text-center">
+                            <div class="col-md-4 mb-4">
+                                <div class="card p-4">
+                                    <i class="bi bi-book feature-icon"></i>
+                                    <div class="card-body">
+                                        <h5 class="card-title">Storytelling</h5>
+                                        <p class="card-text">Engaging narrative generation and creative writing.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card p-4">
+                                    <i class="bi bi-heart feature-icon"></i>
+                                    <div class="card-body">
+                                        <h5 class="card-title">Companionship</h5>
+                                        <p class="card-text">Kind, supportive, and caring interactions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card p-4">
+                                    <i class="bi bi-code-slash feature-icon"></i>
+                                    <div class="card-body">
+                                        <h5 class="card-title">Julia Helper & Debugging</h5>
+                                        <p class="card-text">Programming assistance, challenges, and bug resolution for Julia code.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
-            // Handle navigation clicks
-            document.querySelectorAll('.navbar-nav .nav-link, .list-group-item').forEach(link => {
-                link.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    const targetPath = event.target.getAttribute('href');
-                    history.pushState(null, '', '#' + targetPath);
-                    loadMarkdown(targetPath);
-                });
-            });
+                    <section class="container my-5 docs-section">
+                        <h2 class="section-heading text-center">📚 Documentation & Resources</h2>
+                        <div class="row justify-content-center">
+                            <div class="col-md-8">
+                                <div class="list-group">
+                                    <router-link to="/overview" class="list-group-item list-group-item-action">Project Overview (README)</router-link>
+                                    <router-link to="/architecture" class="list-group-item list-group-item-action">Architecture Documentation</router-link>
+                                    <router-link to="/cli" class="list-group-item list-group-item-action">Command-Line Interface (CLI) Guide</router-link>
+                                    <router-link to="/configuration" class="list-group-item list-group-item-action">Configuration Guide</router-link>
+                                    <router-link to="/troubleshooting" class="list-group-item list-group-item-action">Troubleshooting Guide</router-link>
+                                    <router-link to="/contributing" class="list-group-item list-group-item-action">Contribution Guidelines</router-link>
+                                    <a href="pages/LICENSE" target="_blank" class="list-group-item list-group-item-action">License Information</a>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            ` 
+        };
 
-            // Handle back/forward browser buttons
-            window.addEventListener('popstate', () => {
-                const path = window.location.hash.substring(1) || 'pages/README.md';
-                loadMarkdown(path);
-            });
-        });
-
-        async function loadMarkdown(path) {
-            try {
-                const response = await fetch(path);
-                if (!response.ok) {
-                    throw new Error(`Could not load ${path}: ${response.statusText}`);
-                }
-                const markdownText = await response.text();
-                // We need a place to render this markdown. Let's create a dynamic content area.
-                let contentArea = document.getElementById('markdown-content');
-                if (!contentArea) {
-                    contentArea = document.createElement('div');
-                    contentArea.id = 'markdown-content';
-                    contentArea.className = 'container my-5 main-content';
-                    document.querySelector('footer').before(contentArea);
-                }
-                contentArea.innerHTML = marked.parse(markdownText);
-
-                // Update active link in navbar
-                document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === path) {
-                        link.classList.add('active');
+        const MarkdownPage = {
+            data() {
+                return {
+                    markdownContent: '',
+                    loading: true,
+                    error: null
+                };
+            },
+            async created() {
+                await this.loadMarkdown();
+            },
+            async beforeRouteUpdate(to, from, next) {
+                this.loading = true;
+                this.error = null;
+                await this.loadMarkdown(to.path.substring(1)); // Remove leading '/'
+                next();
+            },
+            methods: {
+                async loadMarkdown(pageName = this.$route.path.substring(1)) {
+                    let path = `pages/${pageName}.md`;
+                    if (pageName === 'overview') {
+                        path = 'pages/README.md'; // Special case for README
+                    } else if (pageName === 'license') { // Special case for LICENSE
+                        path = 'pages/LICENSE';
+                    } else if (pageName === 'contributing') { // Special case for CONTRIBUTING.md
+                        path = 'pages/CONTRIBUTING.md';
                     }
-                });
 
-                // Scroll to top of content
-                contentArea.scrollIntoView({ behavior: 'smooth' });
+                    try {
+                        const response = await fetch(path);
+                        if (!response.ok) {
+                            throw new Error(`Failed to load ${path}: ${response.statusText}`);
+                        }
+                        let text = await response.text();
+                        if (path.endsWith('.md')) {
+                            this.markdownContent = marked.parse(text);
+                        } else {
+                            this.markdownContent = `<pre><code>${text}</code></pre>`; // Display plain text files
+                        }
+                    } catch (err) {
+                        console.error("Error loading markdown:", err);
+                        this.error = `Could not load content. ${err.message}. Please ensure '${path}' exists.`;
+                        this.markdownContent = '';
+                    } finally {
+                        this.loading = false;
+                    }
+                }
+            },
+            template: `
+                <div class="markdown-body">
+                    <div v-if="loading" class="text-center my-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Loading content...</p>
+                    </div>
+                    <div v-else-if="error" class="alert alert-danger" role="alert">
+                        <h4>Error!</h4>
+                        <p>{{ error }}</p>
+                    </div>
+                    <div v-else v-html="markdownContent" id="markdown-content"></div>
+                </div>
+            `
+        };
 
-            } catch (error) {
-                console.error("Error loading markdown:", error);
-                const contentArea = document.getElementById('markdown-content');
-                if (contentArea) {
-                    contentArea.innerHTML = `<div class="alert alert-danger" role="alert">
-                        <h4>Error loading content!</h4>
-                        <p>${error.message}</p>
-                        <p>Please ensure the file '${path}' exists in the 'pages/' directory.</p>
-                    </div>`;
+        const routes = [
+            { path: '/', component: Home },
+            { path: '/overview', component: MarkdownPage },
+            { path: '/architecture', component: MarkdownPage },
+            { path: '/cli', component: MarkdownPage },
+            { path: '/configuration', component: MarkdownPage },
+            { path: '/troubleshooting', component: MarkdownPage },
+            { path: '/contributing', component: MarkdownPage },
+            // Fallback for /license for direct access, even though it's linked via <a>
+            { path: '/license', component: MarkdownPage }
+        ];
+
+        const router = VueRouter.createRouter({
+            history: VueRouter.createWebHashHistory(),
+            routes,
+            scrollBehavior(to, from, savedPosition) {
+                if (savedPosition) {
+                    return savedPosition;
+                } else {
+                    return { top: 0 };
                 }
             }
-        }
+        });
+
+        const app = Vue.createApp({
+            mounted() {
+                // Manually trigger initial load if no hash is present, or for home route
+                if (window.location.hash === '' || window.location.hash === '#/') {
+                    router.replace('/');
+                }
+            }
+        });
+        app.use(router);
+        app.mount('#app');
     </script>
+
     <!--
         NOTE: When opening index.html directly from your file system (file:///...),
         browsers may block the loading of Markdown files due to CORS security policies.
