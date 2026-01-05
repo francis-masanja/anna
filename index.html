@@ -4,115 +4,234 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anna AI - Your Intelligent Companion</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Custom CSS -->
     <style>
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
         }
-        .container {
-            width: 80%;
-            margin: auto;
-            overflow: hidden;
-            padding: 20px 0;
-        }
-        header {
-            background: #333;
-            color: #fff;
-            padding-top: 30px;
-            min-height: 70px;
-            border-bottom: #77aaff 3px solid;
-        }
-        header h1 {
-            text-align: center;
-            text-transform: uppercase;
-            margin: 0;
-        }
-        header p {
-            text-align: center;
-            font-style: italic;
-        }
-        .main-content {
-            padding: 20px;
-            background: #fff;
-            margin-top: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .main-content h2 {
-            color: #77aaff;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-        }
-        .main-content ul {
-            list-style: none;
-            padding: 0;
-        }
-        .main-content ul li {
-            background: #eee;
-            margin-bottom: 10px;
-            padding: 10px;
-            border-left: #77aaff 5px solid;
-            border-radius: 4px;
-        }
-        .main-content ul li a {
-            text-decoration: none;
-            color: #333;
+        .navbar-brand {
             font-weight: bold;
         }
-        .main-content ul li a:hover {
-            color: #77aaff;
+        .hero-section {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1518779578993-ec3579df2cc0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center;
+            background-size: cover;
+            color: #fff;
+            padding: 100px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.25rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+        }
+        .feature-icon {
+            font-size: 3rem;
+            color: #6f42c1; /* Bootstrap purple */
+            margin-bottom: 15px;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .docs-section .list-group-item {
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .docs-section .list-group-item:hover {
+            background-color: #e9ecef;
+            color: #6f42c1;
         }
         footer {
-            text-align: center;
-            padding: 20px;
-            margin-top: 20px;
+            background-color: #343a40;
             color: #fff;
-            background-color: #333;
+            padding: 20px 0;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <header>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="pages/assets/logo.png" alt="Anna AI Logo" width="30" height="30" class="d-inline-block align-text-top me-2">
+                Anna AI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="pages/README.md">Overview</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pages/architecture.md">Architecture</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pages/cli.md">CLI</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pages/configuration.md">Configuration</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pages/troubleshooting.md">Troubleshooting</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pages/CONTRIBUTING.md">Contribute</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section">
         <div class="container">
             <h1>Anna AI</h1>
-            <p>Your Intelligent Companion for Creative and Technical Tasks</p>
+            <p class="lead">Your Intelligent Companion for Creative and Technical Tasks, powered by Julia and Ollama.</p>
+            <a href="pages/README.md" class="btn btn-primary btn-lg">Get Started</a>
+            <a href="https://github.com/am3lue/AnnaAI.jl" class="btn btn-outline-light btn-lg ms-2">View on GitHub</a>
         </div>
-    </header>
+    </section>
 
-    <div class="container main-content">
-        <h2>Welcome to Anna AI!</h2>
-        <p>
-            Anna AI is a versatile and kind intelligent assistant built with Julia and powered by Ollama. 
-            She is designed to assist you with a wide range of creative and technical challenges, 
-            from generating captivating stories to helping you debug Julia code.
-        </p>
-        
-        <p>Explore her core abilities and learn how to get started:</p>
-        
-        <h2>Documentation & Resources</h2>
-        <ul>
-            <li><a href="pages/README.md">Project Overview (README)</a></li>
-            <li><a href="pages/architecture.md">Architecture Documentation</a></li>
-            <li><a href="pages/cli.md">Command-Line Interface (CLI) Guide</a></li>
-            <li><a href="pages/configuration.md">Configuration Guide</a></li>
-            <li><a href="pages/troubleshooting.md">Troubleshooting Guide</a></li>
-            <li><a href="pages/CONTRIBUTING.md">Contribution Guidelines</a></li>
-            <li><a href="pages/LICENSE">License Information</a></li>
-        </ul>
+    <section class="container my-5">
+        <h2 class="text-center mb-4">✨ Core Abilities</h2>
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <div class="card p-4">
+                    <i class="bi bi-book feature-icon">📖</i>
+                    <div class="card-body">
+                        <h5 class="card-title">Storytelling</h5>
+                        <p class="card-text">Engaging narrative generation and creative writing.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card p-4">
+                    <i class="bi bi-heart feature-icon">💕</i>
+                    <div class="card-body">
+                        <h5 class="card-title">Companionship</h5>
+                        <p class="card-text">Kind, supportive, and caring interactions.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card p-4">
+                    <i class="bi bi-code-slash feature-icon">🐢</i>
+                    <div class="card-body">
+                        <h5 class="card-title">Julia Helper & Debugging</h5>
+                        <p class="card-text">Programming assistance, challenges, and bug resolution for Julia code.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <h2>Quick Start</h2>
-        <p>
-            To dive right in, follow the installation steps in the <a href="pages/README.md#installation">README</a> 
-            and then explore the <a href="pages/cli.md">CLI Guide</a> to start interacting with Anna.
-        </p>
-    </div>
+    <section class="container my-5 docs-section">
+        <h2 class="text-center mb-4">📚 Documentation & Resources</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="list-group">
+                    <a href="pages/README.md" class="list-group-item list-group-item-action">Project Overview (README)</a>
+                    <a href="pages/architecture.md" class="list-group-item list-group-item-action">Architecture Documentation</a>
+                    <a href="pages/cli.md" class="list-group-item list-group-item-action">Command-Line Interface (CLI) Guide</a>
+                    <a href="pages/configuration.md" class="list-group-item list-group-item-action">Configuration Guide</a>
+                    <a href="pages/troubleshooting.md" class="list-group-item list-group-item-action">Troubleshooting Guide</a>
+                    <a href="pages/CONTRIBUTING.md" class="list-group-item list-group-item-action">Contribution Guidelines</a>
+                    <a href="pages/LICENSE" class="list-group-item list-group-item-action">License Information</a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <footer>
-        <p>&copy; 2026 Anna AI Project. All rights reserved.</p>
+    <footer class="mt-5">
+        <div class="container">
+            <p>&copy; 2026 Anna AI Project. All rights reserved.</p>
+        </div>
     </footer>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <!-- Marked.js for Markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const path = window.location.hash.substring(1) || 'pages/README.md'; // Default to README
+            loadMarkdown(path);
+
+            // Handle navigation clicks
+            document.querySelectorAll('.navbar-nav .nav-link, .list-group-item').forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const targetPath = event.target.getAttribute('href');
+                    history.pushState(null, '', '#' + targetPath);
+                    loadMarkdown(targetPath);
+                });
+            });
+
+            // Handle back/forward browser buttons
+            window.addEventListener('popstate', () => {
+                const path = window.location.hash.substring(1) || 'pages/README.md';
+                loadMarkdown(path);
+            });
+        });
+
+        async function loadMarkdown(path) {
+            try {
+                const response = await fetch(path);
+                if (!response.ok) {
+                    throw new Error(`Could not load ${path}: ${response.statusText}`);
+                }
+                const markdownText = await response.text();
+                // We need a place to render this markdown. Let's create a dynamic content area.
+                let contentArea = document.getElementById('markdown-content');
+                if (!contentArea) {
+                    contentArea = document.createElement('div');
+                    contentArea.id = 'markdown-content';
+                    contentArea.className = 'container my-5 main-content';
+                    document.querySelector('footer').before(contentArea);
+                }
+                contentArea.innerHTML = marked.parse(markdownText);
+
+                // Update active link in navbar
+                document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === path) {
+                        link.classList.add('active');
+                    }
+                });
+
+                // Scroll to top of content
+                contentArea.scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                console.error("Error loading markdown:", error);
+                const contentArea = document.getElementById('markdown-content');
+                if (contentArea) {
+                    contentArea.innerHTML = `<div class="alert alert-danger" role="alert">
+                        <h4>Error loading content!</h4>
+                        <p>${error.message}</p>
+                        <p>Please ensure the file '${path}' exists in the 'pages/' directory.</p>
+                    </div>`;
+                }
+            }
+        }
+    </script>
+    <!--
+        NOTE: When opening index.html directly from your file system (file:///...),
+        browsers may block the loading of Markdown files due to CORS security policies.
+        For full functionality and to properly view the documentation,
+        please serve this directory using a local web server (e.g., Python's http.server).
+    -->
 </body>
 </html>
