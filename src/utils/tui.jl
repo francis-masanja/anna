@@ -262,9 +262,9 @@ function wrap_text(text::String, width::Int)
 end
 
 
-function print_panel(content::String; title::String = "", width::Int = 80, border_color::String = "cyan")::Nothing
+function print_panel(content::String; title::String = "", border_color::String = "cyan")
     wrapped_lines = String[]
-
+    width = 80  # Fixed width for the panel
     for paragraph in split(content, "\n")
         if isempty(strip(paragraph))
             push!(wrapped_lines, "")

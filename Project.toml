@@ -5,11 +5,13 @@ authors = ["Blue Francis <am3lue@gmail.com>"]
 
 [deps]
 ArgParse = "c7e460c6-2fb9-53a9-8c5b-16f535851c63"
+Crayons = "a8cc5b0e-0ffa-5ad4-8c14-923d3ee1735f"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 JSONSchema = "7d188eb4-7ad8-530c-ae41-71a32a6d4692"
 JuliaFormatter = "98e50ef6-434e-11e9-1051-2b60c6c9e899"
+JuliaSyntaxHighlighting = "ac6e5ff7-fb65-4e79-a425-ec3bc9c03011"
 Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
 Requires = "ae029012-a4dd-5104-9daa-d747884805df"
 StaticLint = "b3cc710f-9c33-5bdb-a03d-a94903873e97"
@@ -17,11 +19,13 @@ TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 
 [compat]
 ArgParse = "1.2.0"
+Crayons = "4.1.1"
 Dates = "1"
 HTTP = "1"
 JSON = "1"
 JSONSchema = "1.5.0"
 JuliaFormatter = "2.2.0"
+JuliaSyntaxHighlighting = "1.12.0"
 Logging = "1"
 Requires = "1"
 StaticLint = "8.2.3"

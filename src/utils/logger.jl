@@ -1,5 +1,7 @@
 module Logger
 
+export setup_logger
+
 using Logging
 
 function setup_logger(level::String)

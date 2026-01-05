@@ -103,12 +103,12 @@ function generate_story(prompt::String, genre::String, length::String, tone::Str
     
     # Set default values if inputs are not recognized
     if !(length in STORY_LENGTHS)
-        @warn "Length '$length' not recognized, using 'medium' instead"
+        # @warn "Length '$length' not recognized, using 'medium' instead"
         length = "medium"
     end
     
     if !(tone in STORY_TONES)
-        @warn "Tone '$tone' not recognized, using 'neutral' instead"
+        # @warn "Tone '$tone' not recognized, using 'neutral' instead"
         tone = "neutral"
     end
     
