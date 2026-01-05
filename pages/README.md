@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/am3lue/AnnaAI.jl/main/docs/assets/logo.png" alt="Anna AI Logo" width="200">
+  <img src="assets/logo.png" alt="Anna AI Logo" width="200">
   <h1>Anna AI</h1>
   <p><i>An intelligent assistant for creative and technical tasks, built with Julia and Ollama.</i></p>
   
@@ -41,7 +41,7 @@ Before you begin, ensure you have the following installed:
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/AnnaAI.jl.git
+    git clone https://github.com/am3lue/AnnaAI.jl.git
     cd AnnaAI.jl
     ```
 
@@ -56,7 +56,7 @@ Before you begin, ensure you have the following installed:
 
 Anna AI uses a configuration file to manage settings. You can create a `config/development.toml` or `config/production.toml` file to override the default settings in `config/config.toml`. See the `config.schema.json` file for the available options.
 
-## usage
+## Usage
 
 You can run Anna AI in interactive mode or use it to perform specific tasks directly from the command line.
 
@@ -76,7 +76,7 @@ julia main.jl --interactive --env production
 
 To generate a story, use the `--story` flag:
 ```bash
-julia main.jl --story --prompt "A brave knight on a quest" --genre fantasy --length medium --tone adventurous
+julia main.jl --story --prompt "A robot who discovers music" --genre fantasy --length medium --tone adventurous
 ```
 
 ## Contributing
