@@ -36,7 +36,7 @@ environment-specific settings from a separate config file.
 # Returns
 - `Dict`: The merged configuration dictionary
 """
-function load_config(env::Union{String, Nothing}=nothing)
+function load_config(env::Union{String,Nothing}=nothing)
     # Load the base configuration from the main config file
     base_config = TOML.parsefile("config/config.toml")
 

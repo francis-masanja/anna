@@ -16,36 +16,35 @@ using Dates
 using JuliaSyntaxHighlighting
 using Base.Threads
 
-
 # Mapping from string names to Crayon objects
-const CRAYON_MAP = Dict{String, Crayon}(
-    "reset" => Crayon(reset=true),
-    "bold" => Crayon(bold=true),
-    "dim" => Crayon(faint=true),
-    "black" => Crayon(foreground=:black),
-    "red" => Crayon(foreground=:red),
-    "green" => Crayon(foreground=:green),
-    "yellow" => Crayon(foreground=:yellow),
-    "blue" => Crayon(foreground=:blue),
-    "magenta" => Crayon(foreground=:magenta),
-    "cyan" => Crayon(foreground=:cyan),
-    "white" => Crayon(foreground=:white),
-    "bright_black" => Crayon(foreground=:dark_gray),
-    "bright_red" => Crayon(foreground=:light_red),
-    "bright_green" => Crayon(foreground=:light_green),
-    "bright_yellow" => Crayon(foreground=:light_yellow),
-    "bright_blue" => Crayon(foreground=:light_blue),
-    "bright_magenta" => Crayon(foreground=:light_magenta),
-    "bright_cyan" => Crayon(foreground=:light_cyan),
-    "bright_white" => Crayon(foreground=:white),
-    "bg_black" => Crayon(background=:black),
-    "bg_red" => Crayon(background=:red),
-    "bg_green" => Crayon(background=:green),
-    "bg_yellow" => Crayon(background=:yellow),
-    "bg_blue" => Crayon(background=:blue),
-    "bg_magenta" => Crayon(background=:magenta),
-    "bg_cyan" => Crayon(background=:cyan),
-    "bg_white" => Crayon(background=:white),
+const CRAYON_MAP = Dict{String,Crayon}(
+    "reset" => Crayon(; reset=true),
+    "bold" => Crayon(; bold=true),
+    "dim" => Crayon(; faint=true),
+    "black" => Crayon(; foreground=:black),
+    "red" => Crayon(; foreground=:red),
+    "green" => Crayon(; foreground=:green),
+    "yellow" => Crayon(; foreground=:yellow),
+    "blue" => Crayon(; foreground=:blue),
+    "magenta" => Crayon(; foreground=:magenta),
+    "cyan" => Crayon(; foreground=:cyan),
+    "white" => Crayon(; foreground=:white),
+    "bright_black" => Crayon(; foreground=:dark_gray),
+    "bright_red" => Crayon(; foreground=:light_red),
+    "bright_green" => Crayon(; foreground=:light_green),
+    "bright_yellow" => Crayon(; foreground=:light_yellow),
+    "bright_blue" => Crayon(; foreground=:light_blue),
+    "bright_magenta" => Crayon(; foreground=:light_magenta),
+    "bright_cyan" => Crayon(; foreground=:light_cyan),
+    "bright_white" => Crayon(; foreground=:white),
+    "bg_black" => Crayon(; background=:black),
+    "bg_red" => Crayon(; background=:red),
+    "bg_green" => Crayon(; background=:green),
+    "bg_yellow" => Crayon(; background=:yellow),
+    "bg_blue" => Crayon(; background=:blue),
+    "bg_magenta" => Crayon(; background=:magenta),
+    "bg_cyan" => Crayon(; background=:cyan),
+    "bg_white" => Crayon(; background=:white),
 )
 
 """
@@ -57,7 +56,7 @@ If the color name is not found, returns the original text.
 function colorize(text::String, color::String)::String
     crayon = get(CRAYON_MAP, color, nothing)
     if !isnothing(crayon)
-        return string(crayon, text, Crayon(reset=true))
+        return string(crayon, text, Crayon(; reset=true))
     end
     return text
 end
@@ -73,7 +72,7 @@ function print_header(text::String)::Nothing
     println(colorize("  $text", "bright_cyan"))
     println(colorize("━" ^ 50, "dim"))
     println()
-    return
+    return nothing
 end
 
 """
@@ -83,7 +82,7 @@ Print a success message.
 """
 function print_success(text::String)::Nothing
     println(colorize("✓ ", "bright_green") * text)
-    return
+    return nothing
 end
 
 """
@@ -93,7 +92,7 @@ Print an error message.
 """
 function print_error(text::String)::Nothing
     println(colorize("✗ ", "bright_red") * text)
-    return
+    return nothing
 end
 
 """
@@ -103,7 +102,7 @@ Print a warning message.
 """
 function print_warning(text::String)::Nothing
     println(colorize("⚠ ", "bright_yellow") * text)
-    return
+    return nothing
 end
 
 """
@@ -113,7 +112,7 @@ Print an info message.
 """
 function print_info(text::String)::Nothing
     println(colorize("ℹ ", "bright_blue") * text)
-    return
+    return nothing
 end
 
 """
@@ -123,7 +122,7 @@ Print a step indicator.
 """
 function print_step(step::Int, total::Int, text::String)::Nothing
     println(colorize("[$step/$total] ", "bright_magenta") * text)
-    return
+    return nothing
 end
 
 """
@@ -151,7 +150,7 @@ Shows a spinning animation while the function executes, then displays success me
 function with_loading(fn::Function, message::String)::Any
     # Create a channel to control the spinner thread
     stop_spinner = Channel{Bool}(1)
-    
+
     # Run spinner animation in a separate thread
     spinner = Threads.@spawn begin
         frames = spinner_frames()
@@ -170,11 +169,11 @@ function with_loading(fn::Function, message::String)::Any
     # Stop the spinner
     put!(stop_spinner, true)
     wait(spinner)
-    
+
     # Clear the spinner line and print success
     print("\r" * " " ^ (length(message) + 2) * "\r")
     print_success(message)
-    
+
     return result
 end
 
@@ -196,7 +195,7 @@ function print_table(headers::Vector{String}, rows::Vector{Vector{String}})::Not
             col_widths[i] = max(col_widths[i], length(cell))
         end
     end
-    
+
     # Print header row with colored headers
     print("  ")
     for (i, header) in enumerate(headers)
@@ -204,14 +203,14 @@ function print_table(headers::Vector{String}, rows::Vector{Vector{String}})::Not
         print("  ")
     end
     println()
-    
+
     # Print separator line
     print("  ")
     for width in col_widths
         print("─" ^ (width + 2))
     end
     println()
-    
+
     # Print each data row
     for row in rows
         print("  ")
@@ -221,8 +220,8 @@ function print_table(headers::Vector{String}, rows::Vector{Vector{String}})::Not
         end
         println()
     end
-    
-    return
+
+    return nothing
 end
 
 """
@@ -261,8 +260,7 @@ function wrap_text(text::String, width::Int)
     return lines
 end
 
-
-function print_panel(content::String; title::String = "", border_color::String = "cyan")
+function print_panel(content::String; title::String="", border_color::String="cyan")
     wrapped_lines = String[]
     width = 80  # Fixed width for the panel
     for paragraph in split(content, "\n")
@@ -290,15 +288,16 @@ function print_panel(content::String; title::String = "", border_color::String =
     end
 
     for line in wrapped_lines
-        println(colorize("┃ ", border_color) *
-                rpad(line, inner_width) *
-                colorize(" ┃", border_color))
+        println(
+            colorize("┃ ", border_color) *
+            rpad(line, inner_width) *
+            colorize(" ┃", border_color),
+        )
     end
 
     println(colorize(bottom, border_color))
     println()
 end
-
 
 """
     MenuOption
@@ -318,16 +317,16 @@ Print a menu and return the selected option key.
 """
 function print_menu(title::String, options::Vector{MenuOption})::String
     print_header(title)
-    
+
     for (i, option) in enumerate(options)
         key = colorize("[$(option.key)]", "bright_magenta")
         desc = option.description
         println("  $key $desc")
     end
-    
+
     println()
     print(colorize("> ", "bright_green"))
-    
+
     return readline()
 end
 
@@ -365,7 +364,7 @@ function select_option(prompt::String, options::Vector{String})::String
         println("  $(colorize("[$i]", "bright_magenta")) $option")
     end
     println()
-    
+
     while true
         print(colorize("Select [1-$(length(options))]: ", "bright_cyan"))
         try
@@ -388,7 +387,7 @@ function print_ascii_art(art::Vector{String}, color::String="bright_cyan")::Noth
     for line in art
         println(colorize(line, color))
     end
-    return
+    return nothing
 end
 
 """
@@ -397,7 +396,7 @@ end
 Highlight Julia code using JuliaSyntaxHighlighting.
 """
 function highlight_julia_code(code::AbstractString)::AbstractString
-    return sprint(highlight, code, lexer=JuliaLexer)
+    return sprint(highlight, code; lexer=JuliaLexer)
 end
 
 """
@@ -407,7 +406,7 @@ Clear the terminal screen.
 """
 function clear_screen()::Nothing
     print("\033c")
-    return
+    return nothing
 end
 
 """
@@ -426,11 +425,11 @@ function print_banner()::Nothing
         "",
         "                                       ",
         "   ✨ Intelligent AI Assistant ✨      ",
-        ""
+        "",
     ]
-    
+
     print_ascii_art(banner, "bright_cyan")
-    return
+    return nothing
 end
 
 """
@@ -464,7 +463,7 @@ function update_progress(progress::LoadingProgress, current::Int)::LoadingProgre
     percent = (current / progress.total) * 100
     filled = Int(floor(percent / 5))
     bar = "█" ^ filled * "░" ^ (20 - filled)
-    
+
     elapsed = Dates.now() - progress.start_time
     elapsed_ms = Dates.Millisecond(elapsed).value
     eta = if current > 0
@@ -475,16 +474,20 @@ function update_progress(progress::LoadingProgress, current::Int)::LoadingProgre
     else
         ""
     end
-    
-    print("\r$(colorize("│", "dim")) $(colorize(bar, "bright_green")) $(colorize("│", "dim")) ")
+
+    print(
+        "\r$(colorize("│", "dim")) $(colorize(bar, "bright_green")) $(colorize("│", "dim")) ",
+    )
     print(colorize("$percent%", "bright_cyan") * " $progress.description$eta")
-    
+
     if current == progress.total
-        total_time = round((Dates.now() - progress.start_time) / Dates.Millisecond(1000), digits=1)
+        total_time = round(
+            (Dates.now() - progress.start_time) / Dates.Millisecond(1000); digits=1
+        )
         println()
         print_success("Completed in $(total_time)s")
     end
-    
+
     return progress
 end
 
@@ -522,15 +525,10 @@ function print_help()::Nothing
         ["--length short", "Length (short, medium, long)"],
         ["--tone happy", "Tone (happy, mysterious, exciting, etc.)"],
         ["/help", "Show this help (in chat)"],
-        ["/quit", "Exit chat"]
+        ["/quit", "Exit chat"],
     ]
-    print_panel(
-        "Here are the available commands:",
-        "Help",
-        "cyan"
-    )
+    print_panel("Here are the available commands:", "Help", "cyan")
     print_table(headers, rows)
 end
 
 end  # End of TUI module
-

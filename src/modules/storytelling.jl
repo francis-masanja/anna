@@ -11,7 +11,14 @@
 
 module Storytelling
 
-export StoryParameters, StoryResult, generate_story, get_supported_genres, get_supported_lengths, get_supported_tones, count_words, analyze_story
+export StoryParameters,
+    StoryResult,
+    generate_story,
+    get_supported_genres,
+    get_supported_lengths,
+    get_supported_tones,
+    count_words,
+    analyze_story
 
 # Import required modules
 using ..AnnaAI: OllamaClient
@@ -46,8 +53,16 @@ end
 List of supported story genres.
 """
 const SUPPORTED_GENRES = [
-    "fantasy", "sci-fi", "science_fiction", "romance", "mystery", 
-    "horror", "adventure", "comedy", "drama", "thriller"
+    "fantasy",
+    "sci-fi",
+    "science_fiction",
+    "romance",
+    "mystery",
+    "horror",
+    "adventure",
+    "comedy",
+    "drama",
+    "thriller",
 ]
 
 """
@@ -90,28 +105,35 @@ story = Storytelling.generate_story(
 )
 ```
 """
-function generate_story(prompt::String, genre::String, length::String, tone::String, model::String, generator::Function)
+function generate_story(
+    prompt::String,
+    genre::String,
+    length::String,
+    tone::String,
+    model::String,
+    generator::Function,
+)
     # Normalize inputs to lowercase for consistent validation
     genre = lowercase(genre)
     length = lowercase(length)
     tone = lowercase(tone)
-    
+
     # DEBUG: Validation warnings (commented out for production)
     # if !(genre in SUPPORTED_GENRES)
     #     @warn "Genre '$genre' not explicitly supported, proceeding anyway"
     # end
-    
+
     # Set default values if inputs are not recognized
     if !(length in STORY_LENGTHS)
         # @warn "Length '$length' not recognized, using 'medium' instead"
         length = "medium"
     end
-    
+
     if !(tone in STORY_TONES)
         # @warn "Tone '$tone' not recognized, using 'neutral' instead"
         tone = "neutral"
     end
-    
+
     # Build the story prompt with specific instructions based on length and tone
     # Length instructions tell the AI how long the story should be
     length_instructions = if length == "short"
@@ -121,7 +143,7 @@ function generate_story(prompt::String, genre::String, length::String, tone::Str
     else
         "a long, detailed story (800+ words)"
     end
-    
+
     # Tone instructions tell the AI what emotional tone to use
     tone_instructions = if tone == "happy"
         "with a cheerful, uplifting ending"
@@ -138,16 +160,16 @@ function generate_story(prompt::String, genre::String, length::String, tone::Str
     else
         "with a balanced narrative"
     end
-    
+
     # Construct the full prompt to send to the LLM
     full_prompt = """
     Please write $length_instructions in the $(genre) genre $tone_instructions.
-    
+
     Story prompt: $prompt
-    
+
     Make the story engaging, well-structured, and creative. Include vivid descriptions and compelling characters.
     """
-    
+
     try
         # Call the generator function (defaults to OllamaClient.generate)
         response = generator(full_prompt, model)
@@ -192,7 +214,9 @@ story = Storytelling.generate_story(
 )
 ```
 """
-function generate_story(prompt::String, genre::String, length::String, tone::String, model::String)::String
+function generate_story(
+    prompt::String, genre::String, length::String, tone::String, model::String
+)::String
     return generate_story(prompt, genre, length, tone, model, OllamaClient.generate)
 end
 
@@ -209,7 +233,9 @@ Generate a story using StoryParameters struct.
 - `String`: The generated story
 """
 function generate_story(params::StoryParameters, model::String, generator::Function)::String
-    return generate_story(params.prompt, params.genre, params.length, params.tone, model, generator)
+    return generate_story(
+        params.prompt, params.genre, params.length, params.tone, model, generator
+    )
 end
 
 """

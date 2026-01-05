@@ -13,12 +13,12 @@ println("=" ^ 60)
 println()
 
 # Colors for output (Windows-compatible)
-const COLORS = Dict{String, String}(
+const COLORS = Dict{String,String}(
     "reset" => "\033[0m",
     "green" => "\033[32m",
     "yellow" => "\033[33m",
     "cyan" => "\033[36m",
-    "bright_green" => "\033[92m"
+    "bright_green" => "\033[92m",
 )
 
 colorize(text::String, color::String) = COLORS[color] * text * COLORS["reset"]
@@ -71,7 +71,7 @@ try
         # Check common installation paths
         program_files_ollama = joinpath(ENV["PROGRAMFILES"], "Ollama", "ollama.exe")
         local_appdata_ollama = joinpath(ENV["LOCALAPPDATA"], "Ollama", "ollama.exe")
-        
+
         if isfile(program_files_ollama) || isfile(local_appdata_ollama)
             print_status("Ollama is installed")
             ollama_installed = true
@@ -80,10 +80,10 @@ try
             println()
             print_info("Downloading Ollama for Windows...")
             println()
-            
+
             ollama_url = "https://ollama.com/download/OllamaSetup.exe"
             ollama_installer = joinpath(pwd(), "OllamaSetup.exe")
-            
+
             try
                 println("  Downloading Ollama from: $ollama_url")
                 Downloads.download(ollama_url, ollama_installer)
@@ -94,7 +94,7 @@ try
                 run_cmd("\"$ollama_installer\" /S")
                 print_status("Ollama installed successfully")
                 ollama_installed = true
-                
+
                 # Give Ollama a moment to start
                 print_info("Waiting for Ollama service to start...")
                 sleep(3)
@@ -114,20 +114,14 @@ println(colorize("Step 3: Installing Julia packages...", "cyan"))
 println()
 print_info("Installing required packages...")
 
-packages = [
-    "HTTP",
-    "JSON",
-    "Dates",
-    "julia_agent",
-    "JuliaSyntaxHighlighting"
-]
+packages = ["HTTP", "JSON", "Dates", "julia_agent", "JuliaSyntaxHighlighting"]
 
 try
     # Activate the project if Project.toml exists
     if isfile("Project.toml")
         Pkg.activate(".")
     end
-    
+
     for pkg in packages
         print("  Installing $pkg...")
         try
@@ -173,9 +167,9 @@ try
         "echo Thank you for using AnnaAI!",
         "echo.",
         "echo Press any key to exit...",
-        "pause >nul"
+        "pause >nul",
     ]
-    
+
     batch_path = joinpath(desktop_path, "run-annaai.bat")
     open(batch_path, "w") do f
         for line in batch_content
@@ -195,7 +189,7 @@ if ollama_installed
         print_status("Modelfile found")
         println()
         print_info("Creating AnnaAI model (this may take a few minutes)...")
-        
+
         # Pull base model first
         print("  Pulling llama3.2 base model...")
         pull_success = run_cmd("ollama pull llama3.2")
@@ -204,7 +198,7 @@ if ollama_installed
         else
             print_warning(" failed (model may already exist)")
         end
-        
+
         # Create the AnnaAI model
         print("  Creating AnnaAI model from Modelfile...")
         create_success = run_cmd("ollama create annaai -f Modelfile")
@@ -227,7 +221,7 @@ println()
 println(colorize("Step 6: Verifying setup...", "cyan"))
 try
     all_good = true
-    
+
     # Check if main.jl exists
     if isfile("main.jl")
         print_status("main.jl found")
@@ -235,7 +229,7 @@ try
         print_warning("main.jl not found")
         all_good = false
     end
-    
+
     # Check if Modelfile exists
     if isfile("Modelfile")
         print_status("Modelfile found")
@@ -243,7 +237,7 @@ try
         print_warning("Modelfile not found")
         all_good = false
     end
-    
+
     # Check for Project.toml
     if isfile("Project.toml")
         print_status("Project.toml found")
@@ -251,7 +245,7 @@ try
         print_warning("Project.toml not found")
         all_good = false
     end
-    
+
     # Check if model exists
     if ollama_installed
         model_check = run_cmd("ollama list | findstr annaai")
@@ -292,7 +286,7 @@ quotes = [
     "The best way to predict the future is to create it. - Peter Drucker",
     "In Julia, as in love, multiple dispatch finds the perfect match.",
     "Every bug you fix makes your code stronger, just like love.",
-    "Programming is poetry written in logic. Julia makes it beautiful."
+    "Programming is poetry written in logic. Julia makes it beautiful.",
 ]
 println()
 println("  \"$(rand(quotes))\"")

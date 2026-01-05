@@ -40,9 +40,9 @@ function generate(prompt::String, model::String)
     full_response = ""
     buffer = IOBuffer()
     try
-        r = HTTP.post(url, headers, JSON.json(body), response_stream=buffer)
+        r = HTTP.post(url, headers, JSON.json(body); response_stream=buffer)
         response_text = String(take!(buffer))
-        
+
         for line in split(response_text, "\n")
             if !isempty(line)
                 json_line = JSON.parse(line)

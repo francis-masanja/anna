@@ -13,7 +13,7 @@ The global state of the application.
 """
 mutable struct AppState
     "The current conversation."
-    conversation::Union{Conversation, Nothing}
+    conversation::Union{Conversation,Nothing}
     "The name of the user."
     user_name::String
 end

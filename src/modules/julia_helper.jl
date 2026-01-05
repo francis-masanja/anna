@@ -12,7 +12,7 @@
 module JuliaHelper
 
 # Import required modules
-using ..AnnaAI 
+using ..AnnaAI
 using ..OllamaClient
 
 """
@@ -72,9 +72,18 @@ end
 Topics for Julia challenges.
 """
 const CHALLENGE_TOPICS = [
-    "functions", "types", "arrays", "dictionaries", "loops",
-    "comprehensions", "multiple dispatch", "modules", "metaprogramming",
-    "performance", "linear algebra", "statistics"
+    "functions",
+    "types",
+    "arrays",
+    "dictionaries",
+    "loops",
+    "comprehensions",
+    "multiple dispatch",
+    "modules",
+    "metaprogramming",
+    "performance",
+    "linear algebra",
+    "statistics",
 ]
 
 """
@@ -96,7 +105,7 @@ analysis = JuliaHelper.analyze_code("function foo(x) return x^2 end")
 function analyze_code(code::String)::CodeAnalysis
     line_count = count_lines(code)
     word_count = count_words(code)
-    
+
     # Basic complexity estimation
     complexity = if line_count < 10
         "low"
@@ -107,35 +116,40 @@ function analyze_code(code::String)::CodeAnalysis
     else
         "very high"
     end
-    
+
     # Generate suggestions based on code patterns
     suggestions = Vector{String}()
-    
+
     if occursin("for ", code) && !occursin("@inbounds", code)
         push!(suggestions, "Consider using @inbounds for performance in loops when safe")
     end
-    
+
     if occursin("Array{Float64", code)
-        push!(suggestions, "Consider using Vector{Float64}(undef, n) for type-stable array creation")
+        push!(
+            suggestions,
+            "Consider using Vector{Float64}(undef, n) for type-stable array creation",
+        )
     end
-    
+
     if !occursin("function", code) && !occursin("struct", code)
-        push!(suggestions, "Consider encapsulating code in functions for better organization")
+        push!(
+            suggestions, "Consider encapsulating code in functions for better organization"
+        )
     end
-    
+
     if occursin("using Pkg", code)
         push!(suggestions, "Package loading should typically happen at the top level")
     end
-    
+
     # Use Ollama for advanced analysis if available
     try
         prompt = """
         Analyze this Julia code and provide 2-3 concise improvement suggestions:
-        
+
         ```julia
         $code
         ```
-        
+
         Focus on: performance, style, and best practices.
         """
         ai_suggestions = OllamaClient.generate(prompt, "llama2")
@@ -149,7 +163,7 @@ function analyze_code(code::String)::CodeAnalysis
     catch e
         # Silently continue if AI analysis fails
     end
-    
+
     return CodeAnalysis(code, line_count, word_count, complexity, suggestions)
 end
 
@@ -172,56 +186,56 @@ explanation = JuliaHelper.explain_code("map(x -> x^2, [1, 2, 3])", "medium")
 """
 function explain_code(code::String, detail_level::String="medium")::CodeExplanation
     detail_level = lowercase(detail_level)
-    
+
     # Generate explanation using AI
     prompt = if detail_level == "basic"
         """
         Explain this Julia code in simple terms for a beginner:
-        
+
         ```julia
         $code
         ```
-        
+
         Keep it very brief and use simple language.
         """
     elseif detail_level == "detailed"
         """
         Provide a detailed technical explanation of this Julia code:
-        
+
         ```julia
         $code
         ```
-        
+
         Include: what each line does, Julia-specific concepts used, and performance considerations.
         """
     else
         """
         Explain this Julia code clearly:
-        
+
         ```julia
         $code
         ```
-        
+
         Include a summary, key concepts, and helpful tips.
         """
     end
-    
+
     try
         ai_explanation = OllamaClient.generate(prompt, "llama2")
-        
+
         # Parse the explanation
         summary = ai_explanation
         line_by_line = split(ai_explanation, "\n")
         key_concepts = extract_concepts(code)
         tips = generate_tips(code)
-        
+
         return CodeExplanation(summary, line_by_line, key_concepts, tips)
     catch e
         return CodeExplanation(
             "Could not generate explanation: $e",
             ["Error generating detailed explanation"],
             extract_concepts(code),
-            generate_tips(code)
+            generate_tips(code),
         )
     end
 end
@@ -246,20 +260,20 @@ challenge = JuliaHelper.get_challenge("easy", "functions")
 function get_challenge(difficulty::String, topic::String)::JuliaChallenge
     difficulty = lowercase(difficulty)
     topic = lowercase(topic)
-    
+
     # Generate challenge using AI
     prompt = """
     Create a Julia programming challenge with:
     - Difficulty: $difficulty
     - Topic: $topic
-    
+
     Format as JSON with keys: title, description, hints (array), starter_code, expected_concepts (array)
     Make it educational and appropriate for learning Julia.
     """
-    
+
     try
         ai_response = OllamaClient.generate(prompt, "llama2")
-        
+
         # Parse AI response (simplified - in real implementation, use JSON parsing)
         challenge = parse_challenge_response(ai_response, difficulty, topic)
         return challenge
@@ -296,13 +310,13 @@ This is a simplified validation - in practice, you'd run the code.
 function validate_solution(solution::String, challenge::JuliaChallenge)::Bool
     # Basic validation - check if expected concepts are used
     solution_lower = lowercase(solution)
-    
+
     for concept in challenge.expected_concepts
         if !occursin(lowercase(concept), solution_lower)
             return false
         end
     end
-    
+
     return true
 end
 
@@ -323,7 +337,7 @@ function get_documentation(function_name::String)::String
     Include: usage, arguments, return value, and examples.
     Keep it concise but informative.
     """
-    
+
     try
         return OllamaClient.generate(prompt, "llama2")
     catch e
@@ -343,7 +357,7 @@ end
 
 function extract_concepts(code::String)::Vector{String}
     concepts = String[]
-    
+
     concept_patterns = [
         (r"function\s+(\w+)", "functions"),
         (r"struct\s+(\w+)", "custom types"),
@@ -358,42 +372,44 @@ function extract_concepts(code::String)::Vector{String}
         (r"begin\s", "blocks"),
         (r"let\s", "let blocks"),
     ]
-    
+
     for (pattern, concept) in concept_patterns
         if occursin(pattern, code) && !(concept in concepts)
             push!(concepts, concept)
         end
     end
-    
+
     if isempty(concepts)
         push!(concepts, "basic Julia syntax")
     end
-    
+
     return concepts
 end
 
 function generate_tips(code::String)::Vector{String}
     tips = String[]
-    
+
     if occursin("global", code)
         push!(tips, "Avoid global variables in performance-critical code")
     end
-    
+
     if occursin("Array", code)
         push!(tips, "Consider pre-allocating arrays for better performance")
     end
-    
+
     if occursin(r"\.[*+/\\-]", code)
         push!(tips, "Dot broadcasting can improve performance on arrays")
     end
-    
+
     push!(tips, "Use @time to profile your code's performance")
     push!(tips, "Run Julia with --optimize=3 for best performance")
-    
+
     return tips
 end
 
-function parse_challenge_response(response::String, difficulty::String, topic::String)::JuliaChallenge
+function parse_challenge_response(
+    response::String, difficulty::String, topic::String
+)::JuliaChallenge
     # Simplified parsing - in real implementation, use JSON parsing
     return JuliaChallenge(
         "Julia $topic Challenge",
@@ -401,7 +417,7 @@ function parse_challenge_response(response::String, difficulty::String, topic::S
         EASY,
         ["Start by reading the starter code carefully"],
         "# Your code here\n",
-        [topic]
+        [topic],
     )
 end
 
@@ -412,7 +428,7 @@ function create_default_challenge(difficulty::String, topic::String)::JuliaChall
         EASY,
         ["Break the problem into smaller parts"],
         "# Write your solution here\n",
-        [topic]
+        [topic],
     )
 end
 
@@ -435,4 +451,3 @@ function get_difficulties()::Vector{String}
 end
 
 end  # End of JuliaHelper module
-

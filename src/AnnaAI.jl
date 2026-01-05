@@ -55,7 +55,7 @@ function run_code_explanation(model::String, parsed_args)
     file_path = parsed_args["explain-code"]
     if !isfile(file_path)
         TUI.print_error("File not found: $file_path")
-        return
+        return nothing
     end
     code = read(file_path, String)
     explanation = JuliaHelper.explain_code(code)
@@ -81,7 +81,7 @@ function run_code_analysis(model::String, parsed_args)
     file_path = parsed_args["analyze-code"]
     if !isfile(file_path)
         TUI.print_error("File not found: $file_path")
-        return
+        return nothing
     end
     code = read(file_path, String)
     analysis = JuliaHelper.analyze_code(code)
@@ -94,7 +94,7 @@ function run_code_analysis(model::String, parsed_args)
     println()
 
     TUI.print_panel(TUI.highlight_julia_code(code), "Code", "cyan")
-    
+
     TUI.print_header("Suggestions")
     for suggestion in analysis.suggestions
         println(TUI.colorize("• ", "bright_yellow") * suggestion)
@@ -105,7 +105,7 @@ function run_story_generation(model::String, parsed_args)
     prompt = parsed_args["prompt"]
     if isnothing(prompt) || isempty(prompt)
         TUI.print_error("Please provide a prompt: --prompt 'your story idea'")
-        return
+        return nothing
     end
     genre = parsed_args["genre"]
     len = parsed_args["length"]
@@ -115,7 +115,7 @@ function run_story_generation(model::String, parsed_args)
         Storytelling.generate_story(prompt, genre, len, tone, model)
     end
     println()
-    
+
     paragraphs = split(story, "\n")
     formatted_story = ""
     for p in paragraphs
@@ -130,13 +130,12 @@ function run_story_generation(model::String, parsed_args)
     else
         TUI.print_info("Returning to main menu...")
     end
-    
 end
 
 function run_interactive_mode(model::String)
     TUI.print_banner()
     println()
-    
+
     while true
         print(TUI.colorize("› ", "bright_green"))
         user_input = readline()
@@ -173,13 +172,15 @@ function run_story_generation_menu(model::String)
     prompt = TUI.prompt_input("Enter a prompt for your story:")
     if isempty(prompt)
         TUI.print_warning("Prompt cannot be empty.")
-        return
+        return nothing
     end
     genre = TUI.select_option("Select a genre:", Storytelling.get_supported_genres())
     len = TUI.select_option("Select a length:", Storytelling.get_supported_lengths())
     tone = TUI.select_option("Select a tone:", Storytelling.get_supported_tones())
 
-    parsed_args = Dict("prompt" => prompt, "genre" => genre, "length" => len, "tone" => tone)
+    parsed_args = Dict(
+        "prompt" => prompt, "genre" => genre, "length" => len, "tone" => tone
+    )
     run_story_generation(model, parsed_args)
 end
 
@@ -189,7 +190,7 @@ function run_julia_helper_menu(model::String)
             TUI.MenuOption("1", "Analyze Code", () -> run_code_analysis_menu(model)),
             TUI.MenuOption("2", "Explain Code", () -> run_code_explanation_menu(model)),
             TUI.MenuOption("3", "Get a Challenge", () -> run_challenge_menu(model)),
-            TUI.MenuOption("b", "Back to Main Menu", () -> return)
+            TUI.MenuOption("b", "Back to Main Menu", () -> return nothing),
         ]
         choice = TUI.print_menu("Julia Helper", options)
 
@@ -236,30 +237,30 @@ function julia_main()::Cint
         s = ArgParseSettings()
         @add_arg_table s begin
             "--interactive", "-i"
-                help = "Start interactive chat"
-                action = :store_true
+            help = "Start interactive chat"
+            action = :store_true
             "--story"
-                help = "Generate a story"
-                action = :store_true
+            help = "Generate a story"
+            action = :store_true
             "--prompt"
-                help = "Story prompt"
-                arg_type = String
+            help = "Story prompt"
+            arg_type = String
             "--genre"
-                help = "Story genre"
-                arg_type = String
-                default = "fantasy"
+            help = "Story genre"
+            arg_type = String
+            default = "fantasy"
             "--length"
-                help = "Story length"
-                arg_type = String
-                default = "short"
+            help = "Story length"
+            arg_type = String
+            default = "short"
             "--tone"
-                help = "Story tone"
-                arg_type = String
-                default = "neutral"
+            help = "Story tone"
+            arg_type = String
+            default = "neutral"
             "--env"
-                help = "Environment"
-                arg_type = String
-                default = "development"
+            help = "Environment"
+            arg_type = String
+            default = "development"
         end
 
         parsed_args = parse_args(ARGS, s)
@@ -297,10 +298,14 @@ function julia_main()::Cint
                 TUI.print_banner()
                 println()
                 options = [
-                    TUI.MenuOption("1", "Interactive Chat", () -> run_interactive_mode(model)),
-                    TUI.MenuOption("2", "Story Generation", () -> run_story_generation_menu(model)),
+                    TUI.MenuOption(
+                        "1", "Interactive Chat", () -> run_interactive_mode(model)
+                    ),
+                    TUI.MenuOption(
+                        "2", "Story Generation", () -> run_story_generation_menu(model)
+                    ),
                     TUI.MenuOption("3", "Julia Helper", () -> run_julia_helper_menu(model)),
-                    TUI.MenuOption("q", "Quit", () -> return)
+                    TUI.MenuOption("q", "Quit", () -> return nothing),
                 ]
                 choice = TUI.print_menu("Main Menu", options)
 
