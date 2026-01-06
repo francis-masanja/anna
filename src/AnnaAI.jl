@@ -40,7 +40,7 @@ function run_challenge(model::String, parsed_args)
     println(TUI.colorize("Topic: ", "bright_cyan") * challenge.expected_concepts[1])
     println()
 
-    TUI.print_panel(challenge.description, "Description", "cyan")
+    print_panel(challenge.description, "Description", "cyan")
 
     TUI.print_header("Starter Code")
     println(TUI.highlight_julia_code(challenge.starter_code))
@@ -61,7 +61,7 @@ function run_code_explanation(model::String, parsed_args)
     explanation = JuliaHelper.explain_code(code)
 
     TUI.print_header("Code Explanation")
-    TUI.print_panel(TUI.highlight_julia_code(code), "Code", "cyan")
+    print_panel(TUI.highlight_julia_code(code), "Code", "cyan")
 
     TUI.print_header("Summary")
     println(explanation.summary)
@@ -93,7 +93,7 @@ function run_code_analysis(model::String, parsed_args)
     println(TUI.colorize("Complexity: ", "bright_cyan") * analysis.estimated_complexity)
     println()
 
-    TUI.print_panel(TUI.highlight_julia_code(code), "Code", "cyan")
+    print_panel(TUI.highlight_julia_code(code), "Code", "cyan")
 
     TUI.print_header("Suggestions")
     for suggestion in analysis.suggestions
@@ -122,7 +122,7 @@ function run_story_generation(model::String, parsed_args)
         formatted_story *= "  " * p * "\n"
     end
 
-    TUI.print_panel(formatted_story, "Your Story", "cyan")
+    print_panel(formatted_story, "Your Story", "cyan")
     println("\n\nThe End!\n\n Did you want to generate another story? [y/n]")
     answer = readline()
     if lowercase(strip(answer)) == "y"
@@ -133,7 +133,9 @@ function run_story_generation(model::String, parsed_args)
 end
 
 function run_interactive_mode(model::String)
+    TUI.clear_screen()
     TUI.print_banner()
+    TUI.print_info("\n\nStarting interactive chat with AnnaAI.\n\tType /help for commands,\n\t/exit or /quit to quit.")
     println()
 
     while true
@@ -269,7 +271,7 @@ function julia_main()::Cint
         config = Config.load_config(env)
         model = config["ollama"]["model"]
         log_level = config["logging"]["level"]
-        Logger.setup_logger(log_level)
+        # Logger.setup_logger(log_level)
 
         # If any arguments other than --env or no arguments are provided, run in CLI mode
         cli_mode = length(ARGS) > 0 && any(arg -> !startswith(arg, "--env"), ARGS)

@@ -199,7 +199,7 @@ function personalize_response(preferences::UserPreferences, base_response::Strin
 
         Keep the same meaning but adjust the tone and style.
         """
-        personalized = OllamaClient.generate(prompt, "llama2")
+        personalized = OllamaClient.generate(prompt, "annaai")
         if !isempty(personalized)
             return personalized
         end

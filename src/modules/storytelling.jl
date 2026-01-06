@@ -101,7 +101,7 @@ story = Storytelling.generate_story(
     "fantasy",
     "medium",
     "adventurous",
-    "llama2"
+    "annaai"
 )
 ```
 """
@@ -210,7 +210,7 @@ story = Storytelling.generate_story(
     "fantasy",
     "medium",
     "adventurous",
-    "llama2"
+    "annaai"
 )
 ```
 """

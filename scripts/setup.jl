@@ -61,12 +61,12 @@ println()
 
 # Step 2: Check for Ollama
 println(colorize("Step 2: Checking for Ollama...", "cyan"))
-ollama_installed = false
+global ollama_installed::Bool = false
 try
     ollama_path = Sys.which("ollama")
     if ollama_path !== nothing
         print_status("Ollama is installed")
-        ollama_installed = true
+        global ollama_installed = true
     else
         # Check common installation paths
         program_files_ollama = joinpath(ENV["PROGRAMFILES"], "Ollama", "ollama.exe")
@@ -74,7 +74,7 @@ try
 
         if isfile(program_files_ollama) || isfile(local_appdata_ollama)
             print_status("Ollama is installed")
-            ollama_installed = true
+            global ollama_installed = true
         else
             print_warning("Ollama not found")
             println()
@@ -93,7 +93,7 @@ try
                 println()
                 run_cmd("\"$ollama_installer\" /S")
                 print_status("Ollama installed successfully")
-                ollama_installed = true
+                global ollama_installed = true
 
                 # Give Ollama a moment to start
                 print_info("Waiting for Ollama service to start...")
@@ -114,7 +114,7 @@ println(colorize("Step 3: Installing Julia packages...", "cyan"))
 println()
 print_info("Installing required packages...")
 
-packages = ["HTTP", "JSON", "Dates", "julia_agent", "JuliaSyntaxHighlighting"]
+packages = ["HTTP", "JSON", "Dates", "JuliaSyntaxHighlighting"]
 
 try
     # Activate the project if Project.toml exists
@@ -185,7 +185,7 @@ println()
 # Step 5: Create Ollama model
 println(colorize("Step 5: Creating AnnaAI model in Ollama...", "cyan"))
 if ollama_installed
-    if isfile("Modelfile")
+    if isfile("config/Modelfile")
         print_status("Modelfile found")
         println()
         print_info("Creating AnnaAI model (this may take a few minutes)...")
@@ -201,7 +201,7 @@ if ollama_installed
 
         # Create the AnnaAI model
         print("  Creating AnnaAI model from Modelfile...")
-        create_success = run_cmd("ollama create annaai -f Modelfile")
+        create_success = run_cmd("ollama create annaai -f config/Modelfile")
         if create_success
             print_status(" AnnaAI model created successfully!")
         else
@@ -218,24 +218,25 @@ end
 println()
 
 # Step 6: Verify setup
+global all_good::Bool = true
 println(colorize("Step 6: Verifying setup...", "cyan"))
 try
-    all_good = true
+    # all_good = true
 
     # Check if main.jl exists
     if isfile("main.jl")
         print_status("main.jl found")
     else
         print_warning("main.jl not found")
-        all_good = false
+        global all_good = false
     end
 
     # Check if Modelfile exists
-    if isfile("Modelfile")
+    if isfile("config/Modelfile")
         print_status("Modelfile found")
     else
         print_warning("Modelfile not found")
-        all_good = false
+        global all_good = false
     end
 
     # Check for Project.toml
@@ -243,7 +244,7 @@ try
         print_status("Project.toml found")
     else
         print_warning("Project.toml not found")
-        all_good = false
+        global all_good = false
     end
 
     # Check if model exists

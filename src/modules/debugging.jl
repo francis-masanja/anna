@@ -236,7 +236,7 @@ $error_message
 
 Give specific, actionable steps.
 """,
-            "llama2",
+            "annaai",
         )
 
         if !isempty(ai_guidance)
@@ -369,7 +369,7 @@ Analyze this Julia code for performance bottlenecks:
 
 List specific performance issues and improvements.
 """,
-            "llama2",
+            "annaai",
         )
 
         if !isempty(ai_analysis)

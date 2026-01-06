@@ -152,7 +152,7 @@ function analyze_code(code::String)::CodeAnalysis
 
         Focus on: performance, style, and best practices.
         """
-        ai_suggestions = OllamaClient.generate(prompt, "llama2")
+        ai_suggestions = OllamaClient.generate(prompt, "annaai")
         if !isempty(ai_suggestions)
             for line in split(ai_suggestions, "\n")
                 if length(line) > 10 && length(suggestions) < 5
@@ -221,7 +221,7 @@ function explain_code(code::String, detail_level::String="medium")::CodeExplanat
     end
 
     try
-        ai_explanation = OllamaClient.generate(prompt, "llama2")
+        ai_explanation = OllamaClient.generate(prompt, "annaai")
 
         # Parse the explanation
         summary = ai_explanation
@@ -272,7 +272,7 @@ function get_challenge(difficulty::String, topic::String)::JuliaChallenge
     """
 
     try
-        ai_response = OllamaClient.generate(prompt, "llama2")
+        ai_response = OllamaClient.generate(prompt, "annaai")
 
         # Parse AI response (simplified - in real implementation, use JSON parsing)
         challenge = parse_challenge_response(ai_response, difficulty, topic)
@@ -339,7 +339,7 @@ function get_documentation(function_name::String)::String
     """
 
     try
-        return OllamaClient.generate(prompt, "llama2")
+        return OllamaClient.generate(prompt, "annaai")
     catch e
         return "Could not retrieve documentation: $e"
     end

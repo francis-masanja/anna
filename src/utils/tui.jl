@@ -111,7 +111,7 @@ end
 Print an info message.
 """
 function print_info(text::String)::Nothing
-    println(colorize("ℹ ", "bright_blue") * text)
+    println(colorize("$text ", "bright_blue"))
     return nothing
 end
 
@@ -325,7 +325,7 @@ function print_menu(title::String, options::Vector{MenuOption})::String
     end
 
     println()
-    print(colorize("> ", "bright_green"))
+    print(colorize("› ", "bright_green"))
 
     return readline()
 end
