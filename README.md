@@ -23,7 +23,7 @@ Experience Anna AI for yourself. Navigate through our enchanting interface and d
 
 ```bash
 # Clone the repository
-git clone [repository-url]
+git clone [repository-url](https://github.com/francis-masanja/anna)
 
 # Navigate to the project directory
 cd anna-ai
