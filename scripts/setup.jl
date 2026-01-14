@@ -63,45 +63,47 @@ println()
 println(colorize("Step 2: Checking for Ollama...", "cyan"))
 global ollama_installed::Bool = false
 try
-    ollama_path = Sys.which("ollama")
-    if ollama_path !== nothing
-        print_status("Ollama is installed")
+    # Try to run Ollama directly to check if it's installed
+    ollama_check = run_cmd("ollama")
+    if ollama_check
+        print_status("Ollama is installed and working")
         global ollama_installed = true
     else
-        # Check common installation paths
-        program_files_ollama = joinpath(ENV["PROGRAMFILES"], "Ollama", "ollama.exe")
-        local_appdata_ollama = joinpath(ENV["LOCALAPPDATA"], "Ollama", "ollama.exe")
+        print_warning("Ollama not found or not working")
+        println()
+        print_info("Downloading Ollama for Windows...")
+        println()
 
-        if isfile(program_files_ollama) || isfile(local_appdata_ollama)
-            print_status("Ollama is installed")
-            global ollama_installed = true
-        else
-            print_warning("Ollama not found")
+        ollama_url = "https://ollama.com/download/OllamaSetup.exe"
+        ollama_installer = joinpath(pwd(), "OllamaSetup.exe")
+
+        try
+            println("  Downloading Ollama from: $ollama_url")
+            Downloads.download(ollama_url, ollama_installer)
+            print_status("Ollama installer downloaded: $ollama_installer")
             println()
-            print_info("Downloading Ollama for Windows...")
+            print_info("Installing Ollama...")
             println()
+            run_cmd("\"$ollama_installer\" /S")
+            print_status("Ollama installed successfully")
 
-            ollama_url = "https://ollama.com/download/OllamaSetup.exe"
-            ollama_installer = joinpath(pwd(), "OllamaSetup.exe")
-
-            try
-                println("  Downloading Ollama from: $ollama_url")
-                Downloads.download(ollama_url, ollama_installer)
-                print_status("Ollama installer downloaded: $ollama_installer")
-                println()
-                print_info("Installing Ollama...")
-                println()
-                run_cmd("\"$ollama_installer\" /S")
-                print_status("Ollama installed successfully")
+            # Confirm Ollama installation by running it
+            print_info("Confirming Ollama installation...")
+            confirm_cmd = run_cmd("ollama --version")
+            if confirm_cmd
+                print_status("Ollama confirmed working")
                 global ollama_installed = true
-
-                # Give Ollama a moment to start
-                print_info("Waiting for Ollama service to start...")
-                sleep(3)
-            catch e
-                print_warning("Could not download/install Ollama automatically")
-                print_info("Please download manually from: https://ollama.com")
+            else
+                print_warning("Ollama installed but could not confirm - may need manual start")
+                global ollama_installed = true  # Still set to true as installation succeeded
             end
+
+            # Give Ollama a moment to start
+            print_info("Waiting for Ollama service to start...")
+            sleep(3)
+        catch e
+            print_warning("Could not download/install Ollama automatically")
+            print_info("Please download manually from: https://ollama.com")
         end
     end
 catch e
@@ -114,7 +116,7 @@ println(colorize("Step 3: Installing Julia packages...", "cyan"))
 println()
 print_info("Installing required packages...")
 
-packages = ["HTTP", "JSON", "Dates", "JuliaSyntaxHighlighting"]
+packages = ["HTTP", "JSON", "Dates", "JuliaSyntaxHighlighting","ArgParse","JSONSchema","Crayons"]
 
 try
     # Activate the project if Project.toml exists
@@ -136,49 +138,32 @@ catch e
 end
 println()
 
-# Step 4: Create the batch file on Desktop
-println(colorize("Step 4: Creating batch file on Desktop...", "cyan"))
+# Step 4: Create AnnaAI folder on Desktop and copy files
+println(colorize("Step 4: Setting up AnnaAI folder on Desktop...", "cyan"))
 try
     desktop_path = joinpath(ENV["USERPROFILE"], "Desktop")
-    batch_content = [
-        "@echo off",
-        "REM run-annaai.bat - Run AnnaAI from Desktop",
-        "REM Created by Annie Love of Blue",
-        "",
-        "cls",
-        "echo ============================================",
-        "echo   AnnaAI - Your Romantic Julia Assistant",
-        "echo   Created by Annie Love of Blue",
-        "echo ============================================",
-        "echo.",
-        "echo Starting AnnaAI...",
-        "echo.",
-        "",
-        "REM Get the directory where this batch file is located",
-        "set SCRIPT_DIR=%~dp0",
-        "",
-        "REM Change to the AnnaAI directory",
-        "cd /d \"%SCRIPT_DIR%\"",
-        "",
-        "REM Run Julia with main.jl",
-        "julia main.jl",
-        "",
-        "echo.",
-        "echo Thank you for using AnnaAI!",
-        "echo.",
-        "echo Press any key to exit...",
-        "pause >nul",
-    ]
+    annaai_dir = joinpath(desktop_path, "AnnaAI")
 
-    batch_path = joinpath(desktop_path, "run-annaai.bat")
-    open(batch_path, "w") do f
-        for line in batch_content
-            println(f, line)
+    # Create the AnnaAI directory if it doesn't exist
+    if !isdir(annaai_dir)
+        mkpath(annaai_dir)
+        print_status("Created AnnaAI folder on Desktop")
+    else
+        print_status("AnnaAI folder already exists on Desktop")
+    end
+
+    # Copy essential files
+    files_to_copy = ["main.jl", "config", "src", "Project.toml"]
+    for file in files_to_copy
+        if isfile(file) || isdir(file)
+            cp(file, joinpath(annaai_dir, file), force=true)
+            print_status("Copied $file to AnnaAI folder")
+        else
+            print_warning("$file not found, skipping")
         end
     end
-    print_status("Created: run-annaai.bat on Desktop")
 catch e
-    print_warning("Could not create batch file: $e")
+    print_warning("Could not set up AnnaAI folder: $e")
 end
 println()
 
@@ -217,7 +202,51 @@ else
 end
 println()
 
-# Step 6: Verify setup
+# Step 6: Create the batch file on Desktop
+println(colorize("Step 6: Creating batch file on Desktop...", "cyan"))
+try
+    desktop_path = joinpath(ENV["USERPROFILE"], "Desktop")
+    annaai_dir = joinpath(desktop_path, "AnnaAI")
+    batch_content = [
+        "@echo off",
+        "REM run-annaai.bat - Run AnnaAI from Desktop",
+        "REM Created by Annie Love of Blue",
+        "",
+        "cls",
+        "echo ============================================",
+        "echo   AnnaAI - Your Romantic Julia Assistant",
+        "echo   Created by Annie Love of Blue",
+        "echo ============================================",
+        "echo.",
+        "echo Starting AnnaAI...",
+        "echo.",
+        "",
+        "REM Change to the AnnaAI directory",
+        "cd /d \"$annaai_dir\"",
+        "",
+        "REM Run Julia with main.jl",
+        "julia main.jl",
+        "",
+        "echo.",
+        "echo Thank you for using AnnaAI!",
+        "echo.",
+        "echo Press any key to exit...",
+        "pause >nul",
+    ]
+
+    batch_path = joinpath(desktop_path, "run-annaai.bat")
+    open(batch_path, "w") do f
+        for line in batch_content
+            println(f, line)
+        end
+    end
+    print_status("Created: run-annaai.bat on Desktop")
+catch e
+    print_warning("Could not create batch file: $e")
+end
+println()
+
+# Step 7: Verify setup
 global all_good::Bool = true
 println(colorize("Step 6: Verifying setup...", "cyan"))
 try
